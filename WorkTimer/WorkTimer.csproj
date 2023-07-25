@@ -49,10 +49,16 @@
 
 	<ItemGroup>
 	  <None Remove="Resources\Images\analytics.svg" />
+	  <None Remove="Resources\Images\back_arrow.svg" />
+	  <None Remove="Resources\Images\coffee.svg" />
 	  <None Remove="Resources\Images\pause.svg" />
 	  <None Remove="Resources\Images\play.svg" />
+	  <None Remove="Resources\Images\save.svg" />
+	  <None Remove="Resources\Images\settings.svg" />
 	  <None Remove="Resources\Images\stop.svg" />
 	  <None Remove="Resources\Images\timer.svg" />
+	  <None Remove="Resources\Images\work.svg" />
+	  <None Remove="Resources\Images\work_history.svg" />
 	</ItemGroup>
 
 	<ItemGroup>
