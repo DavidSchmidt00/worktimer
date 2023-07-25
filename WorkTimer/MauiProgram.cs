@@ -20,4 +20,5 @@ public static class MauiProgram
         builder.Services.AddTransient<SettingsViewModel>();
 
         return builder.Build();
+    }
 }

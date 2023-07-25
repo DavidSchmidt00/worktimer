@@ -7,7 +7,7 @@
     Shell.FlyoutBehavior="Disabled">
 
     <ShellContent
-        Title="Home"
+        Title="WorkTimer"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
 
