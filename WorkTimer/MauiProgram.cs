@@ -1,4 +1,7 @@
-﻿using WorkTimer.ViewModel;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Maui.Storage;
+using WorkTimer.Database;
+using WorkTimer.ViewModel;
 
 namespace WorkTimer;
 public static class MauiProgram
@@ -13,6 +16,12 @@ public static class MauiProgram
             fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
             fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
         });
+
+        builder.Logging.AddDebug();
+
+        string dbPath = Path.Combine(FileSystem.AppDataDirectory, "worktime.db3");
+        builder.Services.AddSingleton<WorktimeRepository>(s => ActivatorUtilities.CreateInstance<WorktimeRepository>(s, dbPath));
+
         builder.Services.AddSingleton<MainPage>();
         builder.Services.AddSingleton<MainViewModel>();
 
