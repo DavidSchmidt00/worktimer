@@ -115,13 +115,13 @@ namespace WorkTimer.ViewModel
         }
 
         [RelayCommand]
-        async Task Settings()
+        async Task OpenSettings()
         {
             await Shell.Current.GoToAsync(nameof(SettingsPage));
         }
 
         [RelayCommand]
-        async Task Overview()
+        async Task OpenOverview()
         {
             await Shell.Current.GoToAsync(nameof(OverviewPage));
         }
