@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Diagnostics;
+using WorkTimer.Models;
 
 namespace WorkTimer.ViewModel
 {
@@ -108,10 +109,18 @@ namespace WorkTimer.ViewModel
         }
 
         [RelayCommand]
-        void Save()
+        async Task Store()
         {
+            DateTime current_date = DateTime.Now.Date;
+            Trace.WriteLine(string.Format("Adding Worktime for date -> {0} <-", current_date));
+            WorktimeDay newWorktime = new() { Date = current_date, Absent = false, WorkTime = currentTimeWork, PauseTime = currentTimePause };
+
+            await App.WorktimeRepo.AddNewWorktimeDay(newWorktime);
+            string statusMessage = App.WorktimeRepo.StatusMessage;
+            Trace.WriteLine(statusMessage);
+
             ResetTimer();
-            // save operation
+            
         }
 
         [RelayCommand]
