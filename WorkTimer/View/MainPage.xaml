@@ -80,7 +80,7 @@
             Aspect="Center"
             />
             <ImageButton
-            Source="analytics.png"
+            Source="list.png"
             Command="{Binding OpenOverviewCommand}"
             Aspect="Center"
             />

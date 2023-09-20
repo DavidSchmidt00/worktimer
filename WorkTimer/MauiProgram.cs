@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Storage;
 using WorkTimer.Database;
+using WorkTimer.View;
 using WorkTimer.ViewModel;
 
 namespace WorkTimer;
@@ -30,6 +31,10 @@ public static class MauiProgram
 
         builder.Services.AddTransient<OverviewPage>();
         builder.Services.AddTransient<OverviewViewModel>();
+
+        builder.Services.AddTransient<DetailPage>();
+        builder.Services.AddTransient<DetailViewModel>();
+
         return builder.Build();
     }
 }

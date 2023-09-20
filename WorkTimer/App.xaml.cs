@@ -5,13 +5,13 @@ namespace WorkTimer;
 public partial class App : Application
 {
     public static WorktimeRepository WorktimeRepo { get; private set; }
-    public App(WorktimeRepository repo)
+    public App(WorktimeRepository worktimeRepo)
 	{
 		InitializeComponent();
 
 		MainPage = new AppShell();
 
-		WorktimeRepo = repo;
+		WorktimeRepo = worktimeRepo;
 	}
 
     protected override Window CreateWindow(IActivationState activationState)

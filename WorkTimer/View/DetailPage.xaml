@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="WorkTimer.View.DetailPage"
+             Title="Details"
+             xmlns:viewmodel="clr-namespace:WorkTimer.ViewModel"
+             x:DataType="viewmodel:DetailViewModel">
+    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center">
+        <HorizontalStackLayout VerticalOptions="Center">
+            <Label Text="Datum:"
+                   VerticalOptions="Center"/>
+            <DatePicker Date="{Binding DetailDate}" />
+        </HorizontalStackLayout>
+        <HorizontalStackLayout VerticalOptions="Center">
+            <Label Text="Arbeitzeit:"
+                   VerticalOptions="Center"/>
+            <Entry Text="{Binding DetailWorkTime}"/>
+        </HorizontalStackLayout>
+        <HorizontalStackLayout VerticalOptions="Center">
+            <Label Text="Pausenzeit:"
+                   VerticalOptions="Center"/>
+            <Entry Text="{Binding DetailPauseTime}"/>
+        </HorizontalStackLayout>
+        <HorizontalStackLayout VerticalOptions="Center">
+            <Label Text="Abwensenheit:" VerticalOptions="Center"/>
+            <CheckBox IsChecked="{Binding DetailAbsent}" />
+        </HorizontalStackLayout>
+        
+        <StackLayout Orientation="Horizontal" 
+                     Padding="20"
+                     Spacing="20"
+                     HorizontalOptions="Center"
+                     VerticalOptions="Center"
+                     >
+            <ImageButton
+            Source="back_arrow.png"
+            Command="{Binding BackCommand}"
+            Aspect="Center"
+            />
+            <ImageButton
+            Source="save.png"
+            Command="{Binding SaveCommand}"
+            Aspect="Center"
+         />
+        </StackLayout>
+    </VerticalStackLayout>
+</ContentPage>

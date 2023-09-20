@@ -6,21 +6,39 @@
              xmlns:viewmodel="clr-namespace:WorkTimer.ViewModel"
              x:DataType="viewmodel:OverviewViewModel"
              xmlns:local="clr-namespace:WorkTimer">
-    <VerticalStackLayout Padding="20">
-        <Grid ColumnDefinitions="*,*,*,*">
+    <Grid RowDefinitions="auto,*,auto"
+        Padding="10">
+        <Grid ColumnDefinitions="*,*,*,*,95" 
+              Grid.Row="0">
             <Label Text="Datum" Grid.Column="0" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
             <Label Text="Arbeitszeit" Grid.Column="1" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
             <Label Text="Pausenzeit" Grid.Column="2" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
             <Label Text="Abwesend" Grid.Column="3" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
         </Grid>
-        <CollectionView ItemsSource="{Binding WorktimeList}" EmptyView="No data" >
+        <CollectionView ItemsSource="{Binding WorktimeList}" 
+                        EmptyView="No data" 
+                        VerticalScrollBarVisibility="Always"
+                        Grid.Row="1">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="local:Models.WorktimeDay">
-                    <Grid ColumnDefinitions="*,*,*,*" MinimumHeightRequest="50">
+                    <Grid ColumnDefinitions="*,*,*,*,Auto, Auto" MinimumHeightRequest="50">
                         <Label Text="{Binding Date, StringFormat='{0:dd.MM.yyyy}'}" Grid.Column="0" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
                         <Label Text="{Binding WorkTime}" Grid.Column="1" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
                         <Label Text="{Binding PauseTime}" Grid.Column="2" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                        <!--<CheckBox IsChecked="{Binding Absent}" IsEnabled="False" Grid.Column="3"/>-->
                         <Label Text="{Binding Absent}" Grid.Column="3" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                        <ImageButton Grid.Column="4" 
+                                     Source="edit.png"
+                                     Aspect="Center"
+                                     Scale="0.5"
+                                     Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:OverviewViewModel}}, Path=OpenDetailCommand}"
+                                     CommandParameter="{Binding .}"/>
+                        <ImageButton Grid.Column="5"
+                                     Source="delete.png"
+                                     Aspect="Center"
+                                     Scale="0.5"
+                                     Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:OverviewViewModel}}, Path=DeleteCommand}"
+                                     CommandParameter="{Binding .}"/>
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
@@ -29,7 +47,7 @@
             Source="back_arrow.png"
             Command="{Binding BackCommand}"
             Aspect="Center"
-            
+            Grid.Row="2"
         />
-    </VerticalStackLayout>
+    </Grid>
 </ContentPage>
