@@ -6,7 +6,7 @@
              xmlns:viewmodel="clr-namespace:WorkTimer.ViewModel"
              x:DataType="viewmodel:OverviewViewModel"
              xmlns:local="clr-namespace:WorkTimer">
-    <Grid RowDefinitions="auto,*,auto"
+    <Grid RowDefinitions="auto,*,auto,auto"
         Padding="10">
         <Grid ColumnDefinitions="*,*,*,*,95" 
               Grid.Row="0">
@@ -43,11 +43,22 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-        <ImageButton
+        <StackLayout Orientation="Horizontal" 
+             Padding="20"
+             Spacing="20"
+             HorizontalOptions="CenterAndExpand"
+             Grid.Row="2"
+             >
+            <ImageButton
             Source="back_arrow.png"
             Command="{Binding BackCommand}"
             Aspect="Center"
-            Grid.Row="2"
-        />
+            />
+            <ImageButton
+            Source="add.png"
+            Command="{Binding AddCommand}"
+            Aspect="Center"
+            />
+        </StackLayout>
     </Grid>
 </ContentPage>

@@ -10,7 +10,7 @@ using WorkTimer.Util;
 
 namespace WorkTimer.ViewModel
 {
-    [QueryProperty("Element", "Element")]
+    [QueryProperty(nameof(Element), "Element")]
     public partial class DetailViewModel : ObservableObject
     {
         [RelayCommand]
@@ -22,11 +22,18 @@ namespace WorkTimer.ViewModel
         [RelayCommand]
         async Task Save()
         {
-            WorktimeDay newWorktime = new() { Id = Element.Id, Date = DateTime.Parse(DetailDate), Absent = DetailAbsent, WorkTime = TimeSpan.Parse(DetailWorkTime), PauseTime = TimeSpan.Parse(DetailPauseTime) };
-            await App.WorktimeRepo.UpdateWorktimeDay(newWorktime);
+            if (Element is not null) { 
+                WorktimeDay newWorktime = new() { Id = Element.Id, Date = DateTime.Parse(DetailDate), Absent = DetailAbsent, WorkTime = TimeSpan.Parse(DetailWorkTime), PauseTime = TimeSpan.Parse(DetailPauseTime) };
+                await App.WorktimeRepo.UpdateWorktimeDay(newWorktime);
+            } else
+            {
+                WorktimeDay newWorktime = new() { Date = DateTime.Parse(DetailDate), Absent = DetailAbsent, WorkTime = TimeSpan.Parse(DetailWorkTime), PauseTime = TimeSpan.Parse(DetailPauseTime) };
+                await App.WorktimeRepo.AddNewWorktimeDay(newWorktime);
+            }
             string statusMessage = App.WorktimeRepo.StatusMessage;
             Trace.WriteLine(statusMessage);
-            WeakReferenceMessenger.Default.Send(new ActionMessage("ElementUpdated"));
+            WeakReferenceMessenger.Default.Send(new ActionMessage("RepoUpdated"));
+            await Shell.Current.GoToAsync("..");
         }
 
         [ObservableProperty]
@@ -46,13 +53,23 @@ namespace WorkTimer.ViewModel
         public WorktimeDay Element {
             get { return _element; }
             set 
-            { 
-                _element = value;
-                DetailDate = _element.Date.ToString("dd.MM.yyyy");
-                DetailWorkTime = _element.WorkTime.ToString();
-                DetailPauseTime = _element.PauseTime.ToString();
-                DetailAbsent = _element.Absent;
+            {
+                if (value is not null) { 
+                    _element = value;
+                    DetailDate = _element.Date.ToString("dd.MM.yyyy");
+                    DetailWorkTime = _element.WorkTime.ToString();
+                    DetailPauseTime = _element.PauseTime.ToString();
+                    DetailAbsent = _element.Absent;
+                } else
+                {
+                    DetailDate = DateTime.Now.Date.ToString("dd.MM.yyyy");
+                    DetailWorkTime = TimeSpan.Zero.ToString();
+                    DetailPauseTime = TimeSpan.Zero.ToString();
+                    DetailAbsent = false;
+                }
             }
         }
+
+        public Boolean CreateNew;
     }
 }

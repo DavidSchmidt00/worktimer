@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Maui.ApplicationModel.Communication;
+using Microsoft.Maui.Controls;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using WorkTimer.Models;
@@ -38,12 +39,6 @@ namespace WorkTimer.ViewModel
         }
 
         [RelayCommand]
-        async Task Back()
-        {
-            await Shell.Current.GoToAsync("..");
-        }
-
-        [RelayCommand]
         async Task Delete(WorktimeDay element)
         {
             await App.WorktimeRepo.DeleteWorktimeDay(element);
@@ -57,7 +52,20 @@ namespace WorkTimer.ViewModel
         {
             var param = new Dictionary<string, object> { { "Element", element } };
             await Shell.Current.GoToAsync(nameof(DetailPage), param);
-            // TODO: Neu laden damit geupdatete Daten angezeigt werden
+        }
+
+
+        [RelayCommand]
+        async Task Add()
+        {
+            var param = new Dictionary<string, object> { { "Element", null } };
+            await Shell.Current.GoToAsync(nameof(DetailPage), param);
+        }
+
+        [RelayCommand]
+        async Task Back()
+        {
+            await Shell.Current.GoToAsync("..");
         }
     }
 }

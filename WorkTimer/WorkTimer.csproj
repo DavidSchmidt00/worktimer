@@ -48,6 +48,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\add.svg" />
 	  <None Remove="Resources\Images\analytics.svg" />
 	  <None Remove="Resources\Images\back_arrow.svg" />
 	  <None Remove="Resources\Images\coffee.svg" />
