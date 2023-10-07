@@ -1,4 +1,7 @@
 ﻿using SQLite;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using WorkTimer.Models;
 
 namespace WorkTimer.Database
@@ -80,7 +83,7 @@ namespace WorkTimer.Database
 
         }
 
-        public async Task<List<WorktimeDay>> GetAllWorktime()
+        public async Task<List<WorktimeDay>> ListAllWorktime()
         {
             try
             {
@@ -94,6 +97,93 @@ namespace WorkTimer.Database
 
             return new List<WorktimeDay>();
         }
+
+       /* public async Task<List<WorktimeAggregatedByDay>> GetAggregatedWorktime()
+        {
+            try
+            {
+                await Init();
+                var worktimeEntries = await conn.Table<WorktimeDay>().ToListAsync();
+
+                var groupedData = worktimeEntries
+                    .GroupBy(x => x.Date.Date)
+                    .Select(group => new WorktimeAggregatedByDay
+                    {
+                        Date = group.Key,
+                        TotalWorkTime = TimeSpan.FromTicks(group.Sum(x => x.WorkTime.Ticks)),
+                        TotalPauseTime = TimeSpan.FromTicks(group.Sum(x => x.PauseTime.Ticks)),
+                        Absent = group.Any(x => x.Absent)
+                    })
+                    .OrderBy(x => x.Date)
+                    .ToList();
+
+                return groupedData;
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = string.Format("Failed to retrieve data. {0}", ex.Message);
+            }
+
+            return new List<WorktimeAggregatedByDay>();
+        }
+       */
+
+
+        public async Task<List<WorktimeAggregatedByWeek>> GetAggregatedWorktimeByWeek()
+        {
+            try
+            {
+                await Init();
+
+                Settings settings = await App.WorktimeRepo.GetSettings();
+
+                var worktimeEntries = await conn.Table<WorktimeDay>().ToListAsync();
+
+                var groupedData = worktimeEntries
+                    .GroupBy(x => GetWeekStart(x.Date))
+                    .Select(group => new WorktimeAggregatedByWeek
+                    {
+                        WeekStartDate = group.Key,
+                        WeekEndDate = group.Key.AddDays(6),
+                        CalendarWeek = GetCalendarWeek(group.Key),
+                        TotalWorkTime = TimeSpan.FromTicks(group.Sum(x => x.WorkTime.Ticks)),
+                        TotalPauseTime = TimeSpan.FromTicks(group.Sum(x => x.PauseTime.Ticks)),
+                        TotalAbsentCount = group.Count(x => x.Absent),
+                        Overtime = CalculateOvertime(TimeSpan.FromTicks(group.Sum(x => x.WorkTime.Ticks)), settings.WorktimeWeeklyHours)
+                    })
+                    .OrderBy(x => x.WeekStartDate)
+                    .ToList();
+
+                return groupedData;
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = string.Format("Failed to retrieve data. {0}", ex.Message);
+            }
+
+            return new List<WorktimeAggregatedByWeek>();
+        }
+
+        private DateTime GetWeekStart(DateTime date)
+        {
+            int daysUntilSunday = (int)date.DayOfWeek - (int)DayOfWeek.Sunday;
+            if (daysUntilSunday < 0)
+                daysUntilSunday += 7;
+            return date.Date.AddDays(-daysUntilSunday);
+        }
+
+        private int GetCalendarWeek(DateTime date)
+        {
+            // Calculate the calendar week based on the provided date
+            var calendar = CultureInfo.InvariantCulture.Calendar;
+            return calendar.GetWeekOfYear(date, CalendarWeekRule.FirstDay, DayOfWeek.Sunday);
+        }
+
+        private TimeSpan CalculateOvertime(TimeSpan totalWorkTime, float standardWorkWeekHours)
+        {
+            return totalWorkTime - TimeSpan.FromHours(standardWorkWeekHours);
+        }
+
 
         public async Task UpdateSettings(Settings settings)
         {

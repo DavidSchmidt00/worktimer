@@ -32,6 +32,7 @@ namespace WorkTimer.ViewModel
             await App.WorktimeRepo.UpdateSettings(newSettings);
             string statusMessage = App.WorktimeRepo.StatusMessage;
             Trace.WriteLine(statusMessage);
+            await Shell.Current.GoToAsync("..");
         }
 
         private readonly Task initTask;

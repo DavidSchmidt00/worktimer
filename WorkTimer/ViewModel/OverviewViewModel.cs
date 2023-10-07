@@ -29,7 +29,7 @@ namespace WorkTimer.ViewModel
 
         async private Task LoadWorktime()
         {
-            List<WorktimeDay> result = await App.WorktimeRepo.GetAllWorktime();
+            List<WorktimeDay> result = await App.WorktimeRepo.ListAllWorktime();
             Trace.WriteLine("Get finished: " + result.Count);
             if (result.Count > 0)
             {

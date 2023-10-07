@@ -84,6 +84,11 @@
             Command="{Binding OpenOverviewCommand}"
             Aspect="Center"
             />
+            <ImageButton
+            Source="analytics.png"
+            Command="{Binding OpenAnalyticsCommand}"
+            Aspect="Center"
+            />
         </StackLayout>
     </StackLayout>
 </ContentPage>

@@ -134,5 +134,11 @@ namespace WorkTimer.ViewModel
         {
             await Shell.Current.GoToAsync(nameof(OverviewPage));
         }
+
+        [RelayCommand]
+        async Task OpenAnalytics()
+        {
+            await Shell.Current.GoToAsync(nameof(AnalyticsPage));
+        }
     }
 }
