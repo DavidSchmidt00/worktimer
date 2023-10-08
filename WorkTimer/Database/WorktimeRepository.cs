@@ -98,37 +98,6 @@ namespace WorkTimer.Database
             return new List<WorktimeDay>();
         }
 
-       /* public async Task<List<WorktimeAggregatedByDay>> GetAggregatedWorktime()
-        {
-            try
-            {
-                await Init();
-                var worktimeEntries = await conn.Table<WorktimeDay>().ToListAsync();
-
-                var groupedData = worktimeEntries
-                    .GroupBy(x => x.Date.Date)
-                    .Select(group => new WorktimeAggregatedByDay
-                    {
-                        Date = group.Key,
-                        TotalWorkTime = TimeSpan.FromTicks(group.Sum(x => x.WorkTime.Ticks)),
-                        TotalPauseTime = TimeSpan.FromTicks(group.Sum(x => x.PauseTime.Ticks)),
-                        Absent = group.Any(x => x.Absent)
-                    })
-                    .OrderBy(x => x.Date)
-                    .ToList();
-
-                return groupedData;
-            }
-            catch (Exception ex)
-            {
-                StatusMessage = string.Format("Failed to retrieve data. {0}", ex.Message);
-            }
-
-            return new List<WorktimeAggregatedByDay>();
-        }
-       */
-
-
         public async Task<List<WorktimeAggregatedByWeek>> GetAggregatedWorktimeByWeek()
         {
             try
