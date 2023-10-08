@@ -1,11 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using WorkTimer.Models;
 using WorkTimer.Util;
 using WorkTimer.View;
+using LiveChartsCore.SkiaSharpView.Painting;
+using SkiaSharp;
 
 namespace WorkTimer.ViewModel
 {
@@ -21,13 +25,26 @@ namespace WorkTimer.ViewModel
         ObservableCollection<WorktimeAggregatedByWeek> worktimeAggregatedList = new ObservableCollection<WorktimeAggregatedByWeek>();
 
         [ObservableProperty]
-        String overtimeText = "Über-/Unterstunden:";
+        ISeries[] series;
 
-        [ObservableProperty]
-        String overtimeFormatted = "Lädt...";
+        public Axis[] XAxes { get; set; }
+            = new Axis[]
+            {
+                new Axis
+                {
+                    Name = "KW",
+                    MinStep = 1
+                }
+            };
 
-        [ObservableProperty]
-        Color overtimeTextColor = Colors.Black;
+        public Axis[] YAxes { get; set; }
+            = new Axis[]
+            {
+                new Axis
+                {
+                    Name = "Stunden"
+                }
+            };
 
         async private Task LoadWorktime()
         {
@@ -42,16 +59,34 @@ namespace WorkTimer.ViewModel
                     WorktimeAggregatedList.Add(day);
                     overtime = overtime.Add(day.Overtime);
                 }
-            }
-            OvertimeFormatted = overtime.ToString();
-            if (overtime >= TimeSpan.Zero)
-            {
-                OvertimeText = "Überstunden:";
-                OvertimeTextColor = Colors.Green;
-            }else
-            {
-                OvertimeText = "Unterstunden:";
-                OvertimeTextColor = Colors.Red;
+
+                Series = new ISeries[]
+                {
+                    new ColumnSeries<WorktimeAggregatedByWeek>
+                    {
+                        Values = result,
+                        Mapping = (value, point) =>
+                        {
+                            point.Coordinate = new (value.CalendarWeek, value.TotalWorkTime.TotalHours);
+                        },
+                        Stroke = null,
+                        Name = "Arbeitszeit",
+                        MaxBarWidth = 40,
+                        IgnoresBarPosition = true
+                    },
+                    new ColumnSeries<WorktimeAggregatedByWeek>
+                    {
+                        Values = result,
+                        Mapping = (value, point) =>
+                        {
+                            point.Coordinate = new (value.CalendarWeek, value.TotalPauseTime.TotalHours);
+                        },
+                        Stroke = null,
+                        Name = "Pausenzeit",
+                        MaxBarWidth = 20,
+                        IgnoresBarPosition = true
+                    }
+                };
             }
         }
 

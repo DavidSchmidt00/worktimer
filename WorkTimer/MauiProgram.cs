@@ -3,6 +3,7 @@ using Microsoft.Maui.Storage;
 using WorkTimer.Database;
 using WorkTimer.View;
 using WorkTimer.ViewModel;
+using SkiaSharp.Views.Maui.Controls.Hosting;
 
 namespace WorkTimer;
 public static class MauiProgram
@@ -11,6 +12,7 @@ public static class MauiProgram
     {
         var builder = MauiApp.CreateBuilder();
         builder
+            .UseSkiaSharp(true)
             .UseMauiApp<App>()
             .ConfigureFonts(fonts =>
         {

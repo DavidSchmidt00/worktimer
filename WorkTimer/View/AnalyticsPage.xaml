@@ -5,10 +5,11 @@
              Title="Analyse"
              xmlns:viewmodel="clr-namespace:WorkTimer.ViewModel"
              x:DataType="viewmodel:AnalyticsViewModel"
-             xmlns:local="clr-namespace:WorkTimer">
+             xmlns:local="clr-namespace:WorkTimer"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui">
     <Grid RowDefinitions="*,auto"
     Padding="10">
-        <Grid ColumnDefinitions="3*,2,*"
+        <Grid ColumnDefinitions="*,2,*"
               Grid.Row="0">
             <Grid RowDefinitions="auto,*"
                   Padding="10"
@@ -39,19 +40,10 @@
                 </CollectionView>
             </Grid>
             <Line Grid.Column="1" BackgroundColor="Black"></Line>
-            <Grid Grid.Column="2" RowDefinitions="Auto,Auto" VerticalOptions="Center">
-                <Label Text="{Binding OvertimeText}"
-                       TextColor="{Binding OvertimeTextColor}"
-                       FontAttributes="Bold"
-                       HorizontalTextAlignment="Center" 
-                       VerticalTextAlignment="Center"
-                       Grid.Row="0"/>
-                <Label Text="{Binding OvertimeFormatted}"
-                       TextColor="{Binding OvertimeTextColor}"
-                       HorizontalTextAlignment="Center" 
-                       VerticalTextAlignment="Center"
-                       Grid.Row="1"/>
-            </Grid> 
+            <lvc:CartesianChart Series="{Binding Series}"
+                                XAxes="{Binding XAxes}"
+                                YAxes="{Binding YAxes}"
+                                Grid.Column="2"></lvc:CartesianChart>
         </Grid>
         <StackLayout Orientation="Horizontal" 
                      Padding="20"
