@@ -40,6 +40,9 @@ public static class MauiProgram
         builder.Services.AddTransient<AnalyticsPage>();
         builder.Services.AddTransient<AnalyticsViewModel>();
 
+        builder.Services.AddTransient<OvertimePage>();
+        builder.Services.AddTransient<OvertimeViewModel>();
+
         return builder.Build();
     }
 }

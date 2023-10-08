@@ -55,6 +55,7 @@
 	  <None Remove="Resources\Images\delete.svg" />
 	  <None Remove="Resources\Images\edit.svg" />
 	  <None Remove="Resources\Images\list.svg" />
+	  <None Remove="Resources\Images\overtime.svg" />
 	  <None Remove="Resources\Images\pause.svg" />
 	  <None Remove="Resources\Images\play.svg" />
 	  <None Remove="Resources\Images\save.svg" />
@@ -76,6 +77,9 @@
 	  <Compile Update="View\AnalyticsPage.xaml.cs">
 	    <DependentUpon>AnalyticsPage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="View\OvertimePage.xaml.cs">
+	    <DependentUpon>OvertimePage.xaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -86,6 +90,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="View\AnalyticsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\OvertimePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="View\SettingsPage.xaml">
