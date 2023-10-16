@@ -118,7 +118,8 @@ namespace WorkTimer.Database
                         TotalWorkTime = TimeSpan.FromTicks(group.Sum(x => x.WorkTime.Ticks)),
                         TotalPauseTime = TimeSpan.FromTicks(group.Sum(x => x.PauseTime.Ticks)),
                         TotalAbsentCount = group.Count(x => x.Absent),
-                        Overtime = CalculateOvertime(TimeSpan.FromTicks(group.Sum(x => x.WorkTime.Ticks)), settings.WorktimeWeeklyHours)
+                        TotalAbsentHours = TimeSpan.FromHours(group.Count(x => x.Absent) * (settings.WorktimeWeeklyHours / 5)),
+                        Overtime = CalculateOvertime(TimeSpan.FromTicks(group.Sum(x => x.WorkTime.Ticks)), settings.WorktimeWeeklyHours, group.Count(x => x.Absent))
                     })
                     .OrderBy(x => x.WeekStartDate)
                     .ToList();
@@ -143,16 +144,14 @@ namespace WorkTimer.Database
 
         private int GetCalendarWeek(DateTime date)
         {
-            // Calculate the calendar week based on the provided date
-            var calendar = CultureInfo.InvariantCulture.Calendar;
-            return calendar.GetWeekOfYear(date, CalendarWeekRule.FirstDay, DayOfWeek.Sunday);
+            return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(date, CalendarWeekRule.FirstDay, DayOfWeek.Sunday);
         }
 
-        private TimeSpan CalculateOvertime(TimeSpan totalWorkTime, float standardWorkWeekHours)
+        private TimeSpan CalculateOvertime(TimeSpan totalWorkTime, float workWeekHours, int totalAbsentCount)
         {
-            return totalWorkTime - TimeSpan.FromHours(standardWorkWeekHours);
+            TimeSpan correctedWorkWeekHours = TimeSpan.FromHours(Math.Round(workWeekHours - (totalAbsentCount * (workWeekHours / 5)),1));
+            return totalWorkTime - correctedWorkWeekHours;
         }
-
 
         public async Task UpdateSettings(Settings settings)
         {

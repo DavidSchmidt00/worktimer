@@ -10,6 +10,7 @@ using WorkTimer.Util;
 using WorkTimer.View;
 using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
+using LiveChartsCore.SkiaSharpView.Painting.Effects;
 
 namespace WorkTimer.ViewModel
 {
@@ -19,6 +20,7 @@ namespace WorkTimer.ViewModel
         public AnalyticsViewModel()
         {
             this.initTask = LoadWorktime();
+
         }
 
         [ObservableProperty]
@@ -46,6 +48,9 @@ namespace WorkTimer.ViewModel
                 }
             };
 
+        [ObservableProperty]
+        public RectangularSection[] sections;        
+
         async private Task LoadWorktime()
         {
             TimeSpan overtime = TimeSpan.Zero;
@@ -62,7 +67,7 @@ namespace WorkTimer.ViewModel
 
                 Series = new ISeries[]
                 {
-                    new ColumnSeries<WorktimeAggregatedByWeek>
+                    new StackedColumnSeries<WorktimeAggregatedByWeek>
                     {
                         Values = result,
                         Mapping = (value, point) =>
@@ -74,17 +79,34 @@ namespace WorkTimer.ViewModel
                         MaxBarWidth = 40,
                         IgnoresBarPosition = true
                     },
-                    new ColumnSeries<WorktimeAggregatedByWeek>
+                    new StackedColumnSeries<WorktimeAggregatedByWeek>
                     {
                         Values = result,
                         Mapping = (value, point) =>
                         {
-                            point.Coordinate = new (value.CalendarWeek, value.TotalPauseTime.TotalHours);
+                            point.Coordinate = new (value.CalendarWeek, value.TotalAbsentHours.TotalHours);
                         },
                         Stroke = null,
-                        Name = "Pausenzeit",
-                        MaxBarWidth = 20,
+                        Name = "Abwesenheit",
+                        MaxBarWidth = 40,
                         IgnoresBarPosition = true
+                    }
+                };
+
+                Settings settings = await App.WorktimeRepo.GetSettings();
+
+                Sections = new RectangularSection[]
+                {
+                    new RectangularSection
+                    {
+                        Yi = settings.WorktimeWeeklyHours,
+                        Yj = settings.WorktimeWeeklyHours,
+                        Stroke = new SolidColorPaint
+                        {
+                            Color = SKColors.Gray,
+                            StrokeThickness = 3,
+                            PathEffect = new DashEffect(new float[] { 6, 6 })
+                        }
                     }
                 };
             }
