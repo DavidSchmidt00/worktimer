@@ -26,7 +26,7 @@ namespace WorkTimer.ViewModel
         }
 
         [RelayCommand]
-        async Task Save()
+        async Task Save() // Aktuelle Werte in Datenbank schreiben
         {
             Settings newSettings = new() { Id = 1, WorktimeWeeklyHours = SettingsWorktimeWeeklyHours, VacationDays = SettingsVacationDays, StandingDesk = SettingsStandingDesk };
             await App.WorktimeRepo.UpdateSettings(newSettings);
@@ -43,6 +43,7 @@ namespace WorkTimer.ViewModel
 
         async private Task LoadWorktime()
         {
+            // Settings-Werte aus Datenbank laden und in UI-Elemente schreiben
             Settings settings = await App.WorktimeRepo.GetSettings();
             Trace.WriteLine("Got settings");
             if (settings is not null)

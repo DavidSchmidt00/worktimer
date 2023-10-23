@@ -17,7 +17,7 @@ namespace WorkTimer.ViewModel
     public partial class AnalyticsViewModel : ObservableObject
     {
         private readonly Task initTask;
-        public AnalyticsViewModel()
+        public AnalyticsViewModel() // Beim Öffnen der Seite die Worktimes aus der Datenbank laden
         {
             this.initTask = LoadWorktime();
 
@@ -53,21 +53,22 @@ namespace WorkTimer.ViewModel
 
         async private Task LoadWorktime()
         {
-            TimeSpan overtime = TimeSpan.Zero;
+            // Auf Wochen aggregierte Worktime aus der Datenbank laden
             List<WorktimeAggregatedByWeek> result = await App.WorktimeRepo.GetAggregatedWorktimeByWeek();
             Trace.WriteLine("Get finished: " + result.Count);
             if (result.Count > 0)
             {
                 WorktimeAggregatedList.Clear();
+                // Ergebnisse der Datenbankabfrage der Liste hinzufügen
                 foreach (WorktimeAggregatedByWeek day in result)
                 {
                     WorktimeAggregatedList.Add(day);
-                    overtime = overtime.Add(day.Overtime);
                 }
 
+                // Erstellung der Series zur Darstellung als Chart
                 Series = new ISeries[]
                 {
-                    new StackedColumnSeries<WorktimeAggregatedByWeek>
+                    new StackedColumnSeries<WorktimeAggregatedByWeek> // Serie mit Worktime
                     {
                         Values = result,
                         Mapping = (value, point) =>
@@ -79,7 +80,7 @@ namespace WorkTimer.ViewModel
                         MaxBarWidth = 40,
                         IgnoresBarPosition = true
                     },
-                    new StackedColumnSeries<WorktimeAggregatedByWeek>
+                    new StackedColumnSeries<WorktimeAggregatedByWeek> // Serie mit Abwesenheit
                     {
                         Values = result,
                         Mapping = (value, point) =>
@@ -93,8 +94,10 @@ namespace WorkTimer.ViewModel
                     }
                 };
 
+                // Einstellungen laden
                 Settings settings = await App.WorktimeRepo.GetSettings();
 
+                // Section zur Darstellung der Soll-Arbeitszeit
                 Sections = new RectangularSection[]
                 {
                     new RectangularSection

@@ -36,11 +36,13 @@ namespace WorkTimer.ViewModel
         async private Task LoadWorktime()
         {
             TimeSpan overtime = TimeSpan.Zero;
+            // Auf Wochen aggregierte Worktime aus der Datenbank laden
             List<WorktimeAggregatedByWeek> result = await App.WorktimeRepo.GetAggregatedWorktimeByWeek();
             Trace.WriteLine("Get finished: " + result.Count);
             if (result.Count > 0)
             {
                 WorktimeAggregatedList.Clear();
+                // Über-/Unterstunden aus den Ergebnissen der Datenbankabfrage aufsummieren
                 foreach (WorktimeAggregatedByWeek day in result)
                 {
                     WorktimeAggregatedList.Add(day);

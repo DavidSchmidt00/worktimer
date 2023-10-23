@@ -29,8 +29,8 @@ namespace WorkTimer.ViewModel
 
         [ObservableProperty]
         bool saveVisible;
-
-        private void ResetTimer()
+        
+        private void ResetTimer() // Alle Zustands-Variablen auf Standard-Werte zurücksetzen
         {
             CurrentTimeWorkFormatted = "00:00:00";
             currentTimeWork = TimeSpan.Zero;
@@ -44,22 +44,24 @@ namespace WorkTimer.ViewModel
 
         public MainViewModel()
         {
+            // Standard-Werte setzen
             ResetTimer();
+
+            // Timer für Arbeits- und Pausenzeit initialisieren und konfigurieren
             timerWork = Application.Current.Dispatcher.CreateTimer();
             timerWork.Interval = TimeSpan.FromSeconds(1);
             timerWork.Tick += (s, e) => WorkTimerTickHandler();
-
             timerPause = Application.Current.Dispatcher.CreateTimer();
             timerPause.Interval = TimeSpan.FromSeconds(1);
             timerPause.Tick += (s, e) => PauseTimerTickHandler();
         }
 
-        private string FormatTime(TimeSpan timeSpan)
+        private string FormatTime(TimeSpan timeSpan) // Hilfsmethode
         {
             return timeSpan.ToString(@"hh\:mm\:ss");
         }
 
-        void WorkTimerTickHandler()
+        void WorkTimerTickHandler() // Funktion wird bei jedem Tick des WorkTimers aufgerufen
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
@@ -68,7 +70,7 @@ namespace WorkTimer.ViewModel
             });
         }
 
-        void PauseTimerTickHandler()
+        void PauseTimerTickHandler() // Funktion wird bei jedem Tick des PauseTimers aufgerufen
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
@@ -113,8 +115,9 @@ namespace WorkTimer.ViewModel
         {
             DateTime current_date = DateTime.Now.Date;
             Trace.WriteLine(string.Format("Adding Worktime for date -> {0} <-", current_date));
+            // WorktimeDay Objekt mit aktuellen Werten erstellen
             WorktimeDay newWorktime = new() { Date = current_date, Absent = false, WorkTime = currentTimeWork, PauseTime = currentTimePause };
-
+            // Erstelltes Objekt in Datenbank schreiben
             await App.WorktimeRepo.AddNewWorktimeDay(newWorktime);
             string statusMessage = App.WorktimeRepo.StatusMessage;
             Trace.WriteLine(statusMessage);

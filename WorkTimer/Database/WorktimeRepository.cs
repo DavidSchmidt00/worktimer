@@ -14,8 +14,9 @@ namespace WorkTimer.Database
         
         public string StatusMessage { get; set; }
         
-        private async Task Init()
+        private async Task Init() // Bei Bedarf Verbindung zur Datenbank aufbauen und Tabellen erstellen, falls sie noch nicht existieren
         {
+            // Wenn Verbindung bereits besteht, nichts tun
             if (conn != null)
                 return;
             
@@ -24,12 +25,12 @@ namespace WorkTimer.Database
             await conn.CreateTableAsync<Settings>();
         }
 
-        public WorktimeRepository(string dbPath)
+        public WorktimeRepository(string dbPath) // Übergabeparameter kommt aus MauiProgramm.cs
         {
             _dbPath = dbPath;
         }
 
-        public async Task AddNewWorktimeDay(WorktimeDay worktime_day)
+        public async Task AddNewWorktimeDay(WorktimeDay worktime_day) // Neuen Eintrag in Datenbank schreiben
         {
             int result = 0;
             try
@@ -47,7 +48,7 @@ namespace WorkTimer.Database
 
         }
 
-        public async Task UpdateWorktimeDay(WorktimeDay worktime_day)
+        public async Task UpdateWorktimeDay(WorktimeDay worktime_day) // Eintrag in Datenbank updaten
         {
             int result = 0;
             try
@@ -65,7 +66,7 @@ namespace WorkTimer.Database
 
         }
 
-        public async Task DeleteWorktimeDay(WorktimeDay worktime_day)
+        public async Task DeleteWorktimeDay(WorktimeDay worktime_day) // Eintrag aus Datenbank löschen
         {
             int result = 0;
             try
@@ -83,7 +84,7 @@ namespace WorkTimer.Database
 
         }
 
-        public async Task<List<WorktimeDay>> ListAllWorktime()
+        public async Task<List<WorktimeDay>> ListAllWorktime() // Alle Einträge der Tabelle WorktimeDay zurückgeben
         {
             try
             {
@@ -98,7 +99,7 @@ namespace WorkTimer.Database
             return new List<WorktimeDay>();
         }
 
-        public async Task<List<WorktimeAggregatedByWeek>> GetAggregatedWorktimeByWeek()
+        public async Task<List<WorktimeAggregatedByWeek>> GetAggregatedWorktimeByWeek() // Alle Einträge der Tablle WorktimeDay nach Kalenderwochen aggregieren und zurückgeben
         {
             try
             {
@@ -106,8 +107,10 @@ namespace WorkTimer.Database
 
                 Settings settings = await App.WorktimeRepo.GetSettings();
 
+                // Alle Einträge aus Tabelle laden
                 var worktimeEntries = await conn.Table<WorktimeDay>().ToListAsync();
 
+                // Einträge nach Kalenderwoche groupieren und neue Werte berechnen oder aggregieren
                 var groupedData = worktimeEntries
                     .GroupBy(x => GetWeekStart(x.Date))
                     .Select(group => new WorktimeAggregatedByWeek
@@ -142,26 +145,30 @@ namespace WorkTimer.Database
             return date.Date.AddDays(-daysUntilSunday);
         }
 
-        private int GetCalendarWeek(DateTime date)
+        private int GetCalendarWeek(DateTime date) // Kalenderwoche zu Datum berechnen
         {
             return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(date, CalendarWeekRule.FirstDay, DayOfWeek.Sunday);
         }
 
-        private TimeSpan CalculateOvertime(TimeSpan totalWorkTime, float workWeekHours, int totalAbsentCount)
+        private TimeSpan CalculateOvertime(TimeSpan totalWorkTime, float workWeekHours, int totalAbsentCount) // Über-/Unterstunden unter Berücksichtigung der Abwesenheiten
         {
             TimeSpan correctedWorkWeekHours = TimeSpan.FromHours(Math.Round(workWeekHours - (totalAbsentCount * (workWeekHours / 5)),1));
             return totalWorkTime - correctedWorkWeekHours;
         }
 
         public async Task UpdateSettings(Settings settings)
+        /*
+         Settings in Datenbank schreiben oder wenn vorhanden updaten.
+         Es soll immer nur genau einen Eintrag in dieser Tabelle geben.
+        */
         {
             int result = 0;
             try
             {
                 await Init();
-                if (await GetSettings() is not null)
+                if (await GetSettings() is not null) // Wenn es schon einen Eintrag gibt, diesen updaten
                     result = await conn.UpdateAsync(settings);
-                else
+                else // Wenn es keinen Eintrag gibt, neuen anlegen
                     result = await conn.InsertAsync(settings);
 
                 StatusMessage = string.Format("{0} record(s) added/updated", result);

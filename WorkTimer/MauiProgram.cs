@@ -22,9 +22,11 @@ public static class MauiProgram
 
         builder.Logging.AddDebug();
 
+        // WorktimeRepository als Singleton initialisieren, damit alle ViewModels darauf zugreifen können
         string dbPath = Path.Combine(FileSystem.AppDataDirectory, "worktime.db3");
         builder.Services.AddSingleton<WorktimeRepository>(s => ActivatorUtilities.CreateInstance<WorktimeRepository>(s, dbPath));
 
+        // Alle Pages und Viewmodels als Singleton initialisieren
         builder.Services.AddSingleton<MainPage>();
         builder.Services.AddSingleton<MainViewModel>();
 

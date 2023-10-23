@@ -10,7 +10,7 @@ using WorkTimer.Util;
 
 namespace WorkTimer.ViewModel
 {
-    [QueryProperty(nameof(Element), "Element")]
+    [QueryProperty(nameof(Element), "Element")] // Übergabe-Parameter ins ViewModel
     public partial class DetailViewModel : ObservableObject
     {
         [RelayCommand]
@@ -18,20 +18,22 @@ namespace WorkTimer.ViewModel
         {
             await Shell.Current.GoToAsync("..");
         }
-
         [RelayCommand]
         async Task Save()
         {
+            // Wenn Übergabe-Parameter ungleich null ist, wird ein Element bearbeitet
             if (Element is not null) { 
                 WorktimeDay newWorktime = new() { Id = Element.Id, Date = DateTime.Parse(DetailDate), Absent = DetailAbsent, WorkTime = TimeSpan.Parse(DetailWorkTime), PauseTime = TimeSpan.Parse(DetailPauseTime) };
                 await App.WorktimeRepo.UpdateWorktimeDay(newWorktime);
-            } else
+            }
+            else // Wenn Übergabe-Parameter null ist, wird ein neues Element erstellt
             {
                 WorktimeDay newWorktime = new() { Date = DateTime.Parse(DetailDate), Absent = DetailAbsent, WorkTime = TimeSpan.Parse(DetailWorkTime), PauseTime = TimeSpan.Parse(DetailPauseTime) };
                 await App.WorktimeRepo.AddNewWorktimeDay(newWorktime);
             }
             string statusMessage = App.WorktimeRepo.StatusMessage;
             Trace.WriteLine(statusMessage);
+            // Signal senden, dass Daten sich geändert haben (siehe OverviewViewModel)
             WeakReferenceMessenger.Default.Send(new ActionMessage("RepoUpdated"));
             await Shell.Current.GoToAsync("..");
         }
@@ -55,6 +57,7 @@ namespace WorkTimer.ViewModel
             set 
             {
                 if (value is not null) { 
+                    // Daten aus vorhandenem Element laden
                     _element = value;
                     DetailDate = _element.Date.ToString("dd.MM.yyyy");
                     DetailWorkTime = _element.WorkTime.ToString();
@@ -62,6 +65,7 @@ namespace WorkTimer.ViewModel
                     DetailAbsent = _element.Absent;
                 } else
                 {
+                    // Standard-Werte zur Erstellung eines neuen Eintrags laden
                     DetailDate = DateTime.Now.Date.ToString("dd.MM.yyyy");
                     DetailWorkTime = TimeSpan.Zero.ToString();
                     DetailPauseTime = TimeSpan.Zero.ToString();

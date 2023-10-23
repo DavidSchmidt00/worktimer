@@ -18,9 +18,11 @@ namespace WorkTimer.ViewModel
         ObservableCollection<WorktimeDay> worktimeList = new ObservableCollection<WorktimeDay>();
 
         private readonly Task initTask;
+
         public OverviewViewModel() 
         {
             this.initTask = LoadWorktime();
+            // Handler auf eine Nachricht vom Typ "ActionMessage" registrieren, der dann die Daten neu aus der Datenbank lädt
             WeakReferenceMessenger.Default.Register<ActionMessage>(this, async (r, m) =>
             {
                 await LoadWorktime();
@@ -29,27 +31,33 @@ namespace WorkTimer.ViewModel
 
         async private Task LoadWorktime()
         {
+            // Alle Einträge aus der Datenbank laden
             List<WorktimeDay> result = await App.WorktimeRepo.ListAllWorktime();
             Trace.WriteLine("Get finished: " + result.Count);
             if (result.Count > 0)
             {
                 WorktimeList.Clear();
+                // Ergebnisse nach Datum sortieren
+                result = result.OrderBy(e => e.Date).ToList();
+                // Ergebnisse der Datenbankabfrage in Liste übernehmen
                 foreach (WorktimeDay day in result) { WorktimeList.Add(day); }
             }
         }
 
         [RelayCommand]
-        async Task Delete(WorktimeDay element)
+        async Task Delete(WorktimeDay element) // Ausgewähltes Element aus Datenbank löschen
         {
             await App.WorktimeRepo.DeleteWorktimeDay(element);
             string statusMessage = App.WorktimeRepo.StatusMessage;
             Trace.WriteLine(statusMessage);
+            // Daten neu laden
             await LoadWorktime();
         }
 
         [RelayCommand]
         async Task OpenDetail(WorktimeDay element)
         {
+            // DetailPage mit dem ausgewählten Element als Übergabeparamter aufrufen
             var param = new Dictionary<string, object> { { "Element", element } };
             await Shell.Current.GoToAsync(nameof(DetailPage), param);
         }
@@ -58,6 +66,7 @@ namespace WorkTimer.ViewModel
         [RelayCommand]
         async Task Add()
         {
+            // DetailPage mit leerem Übergabeparamter aufrufen
             var param = new Dictionary<string, object> { { "Element", null } };
             await Shell.Current.GoToAsync(nameof(DetailPage), param);
         }
