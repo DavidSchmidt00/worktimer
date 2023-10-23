@@ -112,19 +112,17 @@ namespace WorkTimer.Database
 
                 // Einträge nach Kalenderwoche groupieren und neue Werte berechnen oder aggregieren
                 var groupedData = worktimeEntries
-                    .GroupBy(x => GetWeekStart(x.Date))
+                    .GroupBy(x => GetCalendarWeek(x.Date))
                     .Select(group => new WorktimeAggregatedByWeek
                     {
-                        WeekStartDate = group.Key,
-                        WeekEndDate = group.Key.AddDays(6),
-                        CalendarWeek = GetCalendarWeek(group.Key),
-                        TotalWorkTime = TimeSpan.FromTicks(group.Sum(x => x.WorkTime.Ticks)),
-                        TotalPauseTime = TimeSpan.FromTicks(group.Sum(x => x.PauseTime.Ticks)),
-                        TotalAbsentCount = group.Count(x => x.Absent),
-                        TotalAbsentHours = TimeSpan.FromHours(group.Count(x => x.Absent) * (settings.WorktimeWeeklyHours / 5)),
-                        Overtime = CalculateOvertime(TimeSpan.FromTicks(group.Sum(x => x.WorkTime.Ticks)), settings.WorktimeWeeklyHours, group.Count(x => x.Absent))
+                        CalendarWeek = group.Key,
+                        TotalWorkTime = TimeSpan.FromTicks(group.Sum(x => x.WorkTime.Ticks)), // Worktime aus allen Einträgen der Woche summieren
+                        TotalPauseTime = TimeSpan.FromTicks(group.Sum(x => x.PauseTime.Ticks)), // Pausetime aus allen Einträgen der Woche summieren
+                        TotalAbsentCount = group.Count(x => x.Absent), // Zählen der Abwesenheitstage
+                        TotalAbsentHours = TimeSpan.FromHours(group.Count(x => x.Absent) * (settings.WorktimeWeeklyHours / 5)), // Berechnen der Abwesenheitszeit
+                        Overtime = CalculateOvertime(TimeSpan.FromTicks(group.Sum(x => x.WorkTime.Ticks)), settings.WorktimeWeeklyHours, group.Count(x => x.Absent)) // Über-/Unterstunden berechnen
                     })
-                    .OrderBy(x => x.WeekStartDate)
+                    .OrderBy(x => x.CalendarWeek) // Aufsteigend nach Kalenderwoche sortieren
                     .ToList();
 
                 return groupedData;
@@ -135,14 +133,6 @@ namespace WorkTimer.Database
             }
 
             return new List<WorktimeAggregatedByWeek>();
-        }
-
-        private DateTime GetWeekStart(DateTime date)
-        {
-            int daysUntilSunday = (int)date.DayOfWeek - (int)DayOfWeek.Sunday;
-            if (daysUntilSunday < 0)
-                daysUntilSunday += 7;
-            return date.Date.AddDays(-daysUntilSunday);
         }
 
         private int GetCalendarWeek(DateTime date) // Kalenderwoche zu Datum berechnen
@@ -180,12 +170,12 @@ namespace WorkTimer.Database
 
         }
 
-        public async Task<Settings> GetSettings()
+        public async Task<Settings> GetSettings() // Settings aus Datenbank laden
         {
             try
             {
                 await Init();
-                return await conn.Table<Settings>().FirstAsync();
+                return await conn.Table<Settings>().FirstAsync(); // Nur ersten Eintrag abfragen
             }
             catch (Exception ex)
             {

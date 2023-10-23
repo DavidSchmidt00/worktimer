@@ -22,9 +22,6 @@ namespace WorkTimer.ViewModel
         }
 
         [ObservableProperty]
-        ObservableCollection<WorktimeAggregatedByWeek> worktimeAggregatedList = new ObservableCollection<WorktimeAggregatedByWeek>();
-
-        [ObservableProperty]
         String overtimeText = "Über-/Unterstunden:";
 
         [ObservableProperty]
@@ -41,11 +38,9 @@ namespace WorkTimer.ViewModel
             Trace.WriteLine("Get finished: " + result.Count);
             if (result.Count > 0)
             {
-                WorktimeAggregatedList.Clear();
                 // Über-/Unterstunden aus den Ergebnissen der Datenbankabfrage aufsummieren
                 foreach (WorktimeAggregatedByWeek day in result)
                 {
-                    WorktimeAggregatedList.Add(day);
                     overtime = overtime.Add(day.Overtime);
                 }
             }

@@ -14,11 +14,6 @@ namespace WorkTimer.ViewModel
     public partial class DetailViewModel : ObservableObject
     {
         [RelayCommand]
-        async Task Back()
-        {
-            await Shell.Current.GoToAsync("..");
-        }
-        [RelayCommand]
         async Task Save()
         {
             // Wenn Übergabe-Parameter ungleich null ist, wird ein Element bearbeitet
@@ -74,6 +69,10 @@ namespace WorkTimer.ViewModel
             }
         }
 
-        public Boolean CreateNew;
+        [RelayCommand]
+        async Task Back()
+        {
+            await Shell.Current.GoToAsync("..");
+        }
     }
 }
