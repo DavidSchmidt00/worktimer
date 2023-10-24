@@ -1,6 +1,6 @@
 ﻿using WorkTimer.ViewModel;
 
-namespace WorkTimer;
+namespace WorkTimer.View;
 
 public partial class MainPage : ContentPage
 {
