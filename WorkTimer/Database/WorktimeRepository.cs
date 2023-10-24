@@ -9,17 +9,14 @@ namespace WorkTimer.Database
     public class WorktimeRepository
     {
         string _dbPath;
-
         private SQLiteAsyncConnection conn;
-        
         public string StatusMessage { get; set; }
-        
+
         private async Task Init() // Bei Bedarf Verbindung zur Datenbank aufbauen und Tabellen erstellen, falls sie noch nicht existieren
         {
             // Wenn Verbindung bereits besteht, nichts tun
             if (conn != null)
                 return;
-            
             conn = new SQLiteAsyncConnection(_dbPath);
             await conn.CreateTableAsync<WorktimeDay>();
             await conn.CreateTableAsync<Settings>();

@@ -17,7 +17,8 @@ namespace WorkTimer.ViewModel
         async Task Save()
         {
             // Wenn Übergabe-Parameter ungleich null ist, wird ein Element bearbeitet
-            if (Element is not null) { 
+            if (Element is not null)
+            {
                 WorktimeDay newWorktime = new() { Id = Element.Id, Date = DateTime.Parse(DetailDate), Absent = DetailAbsent, WorkTime = TimeSpan.Parse(DetailWorkTime), PauseTime = TimeSpan.Parse(DetailPauseTime) };
                 await App.WorktimeRepo.UpdateWorktimeDay(newWorktime);
             }
@@ -47,11 +48,13 @@ namespace WorkTimer.ViewModel
 
         private WorktimeDay _element;
 
-        public WorktimeDay Element {
+        public WorktimeDay Element 
+        {
             get { return _element; }
-            set 
+            set
             {
-                if (value is not null) { 
+                if (value is not null) 
+                {
                     // Daten aus vorhandenem Element laden
                     _element = value;
                     DetailDate = _element.Date.ToString("dd.MM.yyyy");
