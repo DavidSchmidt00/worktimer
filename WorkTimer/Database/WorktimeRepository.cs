@@ -139,7 +139,7 @@ namespace WorkTimer.Database
 
         private TimeSpan CalculateOvertime(TimeSpan totalWorkTime, float workWeekHours, int totalAbsentCount) // Über-/Unterstunden unter Berücksichtigung der Abwesenheiten
         {
-            TimeSpan correctedWorkWeekHours = TimeSpan.FromHours(Math.Round(workWeekHours - (totalAbsentCount * (workWeekHours / 5)),1));
+            TimeSpan correctedWorkWeekHours = TimeSpan.FromHours(Math.Round(workWeekHours - (totalAbsentCount * (workWeekHours / 5)), 1));
             return totalWorkTime - correctedWorkWeekHours;
         }
 

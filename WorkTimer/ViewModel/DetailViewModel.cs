@@ -48,12 +48,12 @@ namespace WorkTimer.ViewModel
 
         private WorktimeDay _element;
 
-        public WorktimeDay Element 
+        public WorktimeDay Element
         {
             get { return _element; }
             set
             {
-                if (value is not null) 
+                if (value is not null)
                 {
                     // Daten aus vorhandenem Element laden
                     _element = value;

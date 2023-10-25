@@ -50,7 +50,8 @@ namespace WorkTimer.ViewModel
             {
                 OvertimeText = "Überstunden:";
                 OvertimeTextColor = Colors.Green;
-            } else
+            }
+            else
             {
                 OvertimeText = "Unterstunden:";
                 OvertimeTextColor = Colors.Red;
