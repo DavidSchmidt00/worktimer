@@ -61,7 +61,8 @@ namespace WorkTimer.ViewModel
                     DetailWorkTime = _element.WorkTime.ToString();
                     DetailPauseTime = _element.PauseTime.ToString();
                     DetailAbsent = _element.Absent;
-                } else
+                }
+                else
                 {
                     // Standard-Werte zur Erstellung eines neuen Eintrags laden
                     DetailDate = DateTime.Now.Date.ToString("dd.MM.yyyy");
