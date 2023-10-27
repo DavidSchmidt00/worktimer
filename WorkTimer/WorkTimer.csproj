@@ -12,7 +12,7 @@
 		<ApplicationTitle>WorkTimer</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.companyname.worktimer</ApplicationId>
+		<ApplicationId>de.davidschmidt.worktimer</ApplicationId>
 		<ApplicationIdGuid>37d6069b-0ac6-4cf7-a619-f2356f64a161</ApplicationIdGuid>
 
 		<!-- Versions -->
@@ -27,7 +27,7 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 		<GenerateAppInstallerFile>False</GenerateAppInstallerFile>
 		<AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
-		<PackageCertificateThumbprint>BF1168419ED97F76D869D3A5683389B92FA075F3</PackageCertificateThumbprint>
+		<PackageCertificateThumbprint>C1593701302B3456660B19F6686E86F387DC158F</PackageCertificateThumbprint>
 		<AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
 		<AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
 		<AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
