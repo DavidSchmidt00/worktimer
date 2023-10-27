@@ -31,12 +31,12 @@ namespace WorkTimer.ViewModel
 
         async private Task LoadWorktime()
         {
+            WorktimeList.Clear();
             // Alle Einträge aus der Datenbank laden
             List<WorktimeDay> result = await App.WorktimeRepo.ListAllWorktime();
             Trace.WriteLine("Get finished: " + result.Count);
             if (result.Count > 0)
             {
-                WorktimeList.Clear();
                 // Ergebnisse nach Datum sortieren
                 result = result.OrderBy(e => e.Date).ToList();
                 // Ergebnisse der Datenbankabfrage in Liste übernehmen
